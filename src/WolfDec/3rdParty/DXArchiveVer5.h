@@ -15,62 +15,78 @@
 // include --------------------------------------
 #include <stdio.h>
 #include <tchar.h>
+#include <cstdint>
 
 // define ---------------------------------------
 
 // データ型定義
 #ifndef u64
-#define u64		unsigned __int64
+using u64 = std::uint64_t;
+//#define u64		unsigned __int64
 #endif
 
 #ifndef u32
-#define u32		unsigned int
+using u32 = unsigned int;
+//#define u32		unsigned int
 #endif
 
 #ifndef u16
-#define u16		unsigned short
+using u16 = unsigned short;
+//#define u16		unsigned short
 #endif
 
 #ifndef u8
-#define u8		unsigned char
+using u8 = unsigned char;
+//#define u8		unsigned char
 #endif
 
 #ifndef s64
-#define s64		signed __int64
+using s64 = std::int64_t;
+//#define s64		signed __int64
 #endif
 
 #ifndef s32
-#define s32		signed int
+using s32 = int;
+//#define s32		signed int
 #endif
 
 #ifndef s16
-#define s16		signed short
+using s16 = short;
+//#define s16		signed short
 #endif
 
 #ifndef s8
-#define s8		signed char
+using s8 = char;
+//#define s8		signed char
 #endif
 
 #ifndef f64
-#define f64		double
+using f64 = double;
+//#define f64		double
 #endif
 
 #ifndef TRUE
-#define TRUE	(1)
+constexpr bool TRUE{ true };
+//#define TRUE	(1)
 #endif
 
 #ifndef FALSE
-#define FALSE	(0)
+constexpr bool FALSE{ false };
+//#define FALSE	(0)
 #endif
 
 #ifndef NULL
-#define NULL	(0)
+constexpr bool NULL{ false };
+//#define NULL	(0)
 #endif
 
 #define DXA_HEAD_VER5			*((u16 *)"DX")	// ヘッダ
-#define DXA_VER_VER5			(0x0005)		// バージョン
-#define DXA_BUFFERSIZE_VER5		(0x1000000)		// アーカイブ作成時に使用するバッファのサイズ
-#define DXA_KEYSTR_LENGTH_VER5	(12)			// 鍵文字列の長さ
+//#define DXA_VER_VER5(0x0005)		// バージョン
+constexpr auto DXA_VER_VER5{ 0x0005 };
+//#define DXA_BUFFERSIZE_VER5		(0x1000000)		// アーカイブ作成時に使用するバッファのサイズ
+constexpr auto DXA_BUFFERSIZE_VER5{ 0x1000000 };
+//#define DXA_KEYSTR_LENGTH_VER5	(12)			// 鍵文字列の長さ
+constexpr auto DXA_KEYSTR_LENGTH_VER5{ 12 };
 
 /*
 	バージョンごとの違い
@@ -185,7 +201,7 @@ public :
 	// 日付の比較結果
 	enum DATE_RESULT
 	{
-		DATE_RESULT_LEFTNEW = 0,		// 第一引数が新しい
+		DATE_RESULT_LEFTNEW,		// 第一引数が新しい
 		DATE_RESULT_RIGHTNEW,			// 第二引数が新しい
 		DATE_RESULT_DRAW,				// 日付は同じ
 	} ;
@@ -193,41 +209,41 @@ public :
 	DXArchive_VER5(TCHAR *ArchivePath = NULL ) ;
 	~DXArchive_VER5() ;
 
-	static int			EncodeArchive(TCHAR *OutputFileName, TCHAR **FileOrDirectoryPath, int FileNum, bool Press = false, const char *KeyString = NULL ) ;	// アーカイブファイルを作成する
-	static int			EncodeArchiveOneDirectory(TCHAR *OutputFileName, TCHAR *FolderPath, bool Press = false, const char *KeyString = NULL ) ;		// アーカイブファイルを作成する(ディレクトリ一個だけ)
-	static int			DecodeArchive(TCHAR *ArchiveName, const TCHAR *OutputPath, const char *KeyString = NULL ) ;								// アーカイブファイルを展開する
+	static int EncodeArchive(TCHAR *OutputFileName, TCHAR **FileOrDirectoryPath, int FileNum, bool Press = false, const char *KeyString = NULL ) ;	// アーカイブファイルを作成する
+	static int EncodeArchiveOneDirectory(TCHAR *OutputFileName, TCHAR *FolderPath, bool Press = false, const char *KeyString = NULL ) ;				// アーカイブファイルを作成する(ディレクトリ一個だけ)
+	static int DecodeArchive(TCHAR *ArchiveName, const TCHAR *OutputPath, const char *KeyString = NULL ) ;											// アーカイブファイルを展開する
 
-	int					OpenArchiveFile( const TCHAR *ArchivePath, const char *KeyString = NULL ) ;				// アーカイブファイルを開く( 0:成功  -1:失敗 )
-	int					OpenArchiveFileMem( const TCHAR *ArchivePath, const char *KeyString = NULL ) ;			// アーカイブファイルを開き最初にすべてメモリ上に読み込んでから処理する( 0:成功  -1:失敗 )
-	int					OpenArchiveMem( void *ArchiveImage, int ArchiveSize, const char *KeyString = NULL ) ;	// メモリ上にあるアーカイブファイルイメージを開く( 0:成功  -1:失敗 )
-	int					CloseArchiveFile( void ) ;																// アーカイブファイルを閉じる
+	int OpenArchiveFile( const TCHAR *ArchivePath, const char *KeyString = NULL ) ;				// アーカイブファイルを開く( 0:成功  -1:失敗 )
+	int OpenArchiveFileMem( const TCHAR *ArchivePath, const char *KeyString = NULL ) ;			// アーカイブファイルを開き最初にすべてメモリ上に読み込んでから処理する( 0:成功  -1:失敗 )
+	int OpenArchiveMem( void *ArchiveImage, int ArchiveSize, const char *KeyString = NULL ) ;	// メモリ上にあるアーカイブファイルイメージを開く( 0:成功  -1:失敗 )
+	int CloseArchiveFile( void ) ;																// アーカイブファイルを閉じる
 
-	int					LoadFileToMem( const TCHAR *FilePath, void *Buffer, unsigned int BufferLength ) ;	// アーカイブファイル中の指定のファイルをメモリに読み込む( -1:エラー 0以上:ファイルサイズ )
-	int					GetFileSize( const TCHAR *FilePath ) ;										// アーカイブファイル中の指定のファイルをサイズを取得する( -1:エラー )
-	int					GetFileInfo( const TCHAR *FilePath, int *PositionP, int *SizeP ) ;			// アーカイブファイル中の指定のファイルのファイル内の位置とファイルの大きさを得る( -1:エラー )
-	void				*GetFileImage( void ) ;														// アーカイブファイルをメモリに読み込んだ場合のファイルイメージが格納されている先頭アドレスを取得する( メモリから開いている場合のみ有効、圧縮している場合は、圧縮された状態のデータが格納されているので注意 )
-	class DXArchiveFile_VER5 *OpenFile( const TCHAR *FilePath ) ;											// アーカイブファイル中の指定のファイルを開き、ファイルアクセス用オブジェクトを作成する( ファイルから開いている場合のみ有効 )
+	int LoadFileToMem( const TCHAR *FilePath, void *Buffer, unsigned int BufferLength ) ;	// アーカイブファイル中の指定のファイルをメモリに読み込む( -1:エラー 0以上:ファイルサイズ )
+	int GetFileSize( const TCHAR *FilePath ) ;												// アーカイブファイル中の指定のファイルをサイズを取得する( -1:エラー )
+	int GetFileInfo( const TCHAR *FilePath, int *PositionP, int *SizeP ) ;					// アーカイブファイル中の指定のファイルのファイル内の位置とファイルの大きさを得る( -1:エラー )
+	void *GetFileImage( void ) ;															// アーカイブファイルをメモリに読み込んだ場合のファイルイメージが格納されている先頭アドレスを取得する( メモリから開いている場合のみ有効、圧縮している場合は、圧縮された状態のデータが格納されているので注意 )
+	class DXArchiveFile_VER5 *OpenFile( const TCHAR *FilePath ) ;							// アーカイブファイル中の指定のファイルを開き、ファイルアクセス用オブジェクトを作成する( ファイルから開いている場合のみ有効 )
 
-	void *				LoadFileToCash( const TCHAR *FilePath ) ;									// アーカイブファイル中の指定のファイルを、クラス内のキャッシュバッファに読み込む
-	void *				GetCash( void ) ;															// キャッシュバッファのアドレスを取得する
-	int					ClearCash( void ) ;															// キャッシュバッファを開放する
+	void * LoadFileToCash( const TCHAR *FilePath ) ;	// アーカイブファイル中の指定のファイルを、クラス内のキャッシュバッファに読み込む
+	void * GetCash( void ) ;							// キャッシュバッファのアドレスを取得する
+	int ClearCash( void ) ;								// キャッシュバッファを開放する
 
-	int					ChangeCurrentDir( const TCHAR *DirPath ) ;									// アーカイブ内のディレクトリパスを変更する( 0:成功  -1:失敗 )
-	int					GetCurrentDir(TCHAR *DirPathBuffer, int BufferLength ) ;					// アーカイブ内のカレントディレクトリパスを取得する
+	int ChangeCurrentDir( const TCHAR *DirPath ) ;									// アーカイブ内のディレクトリパスを変更する( 0:成功  -1:失敗 )
+	int GetCurrentDir(TCHAR *DirPathBuffer, int BufferLength ) ;					// アーカイブ内のカレントディレクトリパスを取得する
 
 
 
 	// 以下は割と内部で使用
 	static void NotConv( void *Data , int Size ) ;									// データを反転させる関数
-	static void NotConvFileWrite( void *Data, int Size, FILE *fp ) ;				// データを反転させてファイルに書き出す関数
-	static void NotConvFileRead( void *Data, int Size, FILE *fp ) ;					// データを反転させてファイルから読み込む関数
-	static void KeyCreate( const char *Source, unsigned char *Key ) ;				// 鍵文字列を作成
-	static void KeyConv( void *Data, int Size, int Position, unsigned char *Key ) ;	// 鍵文字列を使用して Xor 演算( Key は必ず DXA_KEYSTR_LENGTH_VER5 の長さがなければならない )
-	static void KeyConvFileWrite( void *Data, int Size, FILE *fp, unsigned char *Key, int Position = -1 ) ;	// データを鍵文字列を使用して Xor 演算した後ファイルに書き出す関数( Key は必ず DXA_KEYSTR_LENGTH_VER5 の長さがなければならない )
-	static void KeyConvFileRead( void *Data, int Size, FILE *fp, unsigned char *Key, int Position = -1 ) ;	// ファイルから読み込んだデータを鍵文字列を使用して Xor 演算する関数( Key は必ず DXA_KEYSTR_LENGTH_VER5 の長さがなければならない )
-	static DATE_RESULT DateCmp( DARC_FILETIME_VER5 *date1, DARC_FILETIME_VER5 *date2 ) ;		// どちらが新しいかを比較する
-	static int Encode( void *Src, unsigned int SrcSize, void *Dest ) ;				// データを圧縮する( 戻り値:圧縮後のデータサイズ )
-	static int Decode( void *Src, void *Dest ) ;									// データを解凍する( 戻り値:解凍後のデータサイズ )
+	static void NotConvFileWrite( void *Data, const int Size, FILE* fp ) ;			// データを反転させてファイルに書き出す関数
+	static void NotConvFileRead( void *Data, const int Size, FILE* fp ) ;					// データを反転させてファイルから読み込む関数
+	static void KeyCreate( const char * Source, unsigned char * Key ) ;				// 鍵文字列を作成
+	static void KeyConv( void *Data, const int Size, int Position, unsigned char *Key ) ;	// 鍵文字列を使用して Xor 演算( Key は必ず DXA_KEYSTR_LENGTH_VER5 の長さがなければならない )
+	static void KeyConvFileWrite( void *Data, const int Size, FILE *fp, unsigned char *Key, const int Position = -1 ) ;	// データを鍵文字列を使用して Xor 演算した後ファイルに書き出す関数( Key は必ず DXA_KEYSTR_LENGTH_VER5 の長さがなければならない )
+	static void KeyConvFileRead( void *Data, const int Size, FILE *fp, unsigned char *Key, const int Position = -1 ) ;	// ファイルから読み込んだデータを鍵文字列を使用して Xor 演算する関数( Key は必ず DXA_KEYSTR_LENGTH_VER5 の長さがなければならない )
+	static DATE_RESULT DateCmp( DARC_FILETIME_VER5 &date1, DARC_FILETIME_VER5 &date2 ) ;		// どちらが新しいかを比較する
+	static int Encode( void *Src, unsigned int SrcSize, void *Dest ) ;		// データを圧縮する( 戻り値:圧縮後のデータサイズ )
+	static int Decode(const void * const Src, const void * const Dest ) ;	// データを解凍する( 戻り値:解凍後のデータサイズ )
 
 	DARC_DIRECTORY_VER5 *GetCurrentDirectoryInfo( void ) ;									// アーカイブ内のカレントディレクトリの情報を取得する
 	DARC_FILEHEAD_VER5 *GetFileInfo( const TCHAR *FilePath ) ;							// ファイルの情報を得る
@@ -280,9 +296,9 @@ protected :
 	int DirectoryKeyConv( DARC_DIRECTORY_VER5 *Dir ) ;										// 指定のディレクトリデータの暗号化を解除する( 丸ごとメモリに読み込んだ場合用 )
 
 	// ２バイト文字か調べる( TRUE:２バイト文字 FALSE:１バイト文字 )
-	inline static int CheckMultiByteChar( const TCHAR *Buf )
+	inline static int CheckMultiByteChar( const TCHAR* Buf )
 	{
-		return  ( (unsigned char)*Buf >= 0x81 && (unsigned char)*Buf <= 0x9F ) || ( (unsigned char)*Buf >= 0xE0 && (unsigned char)*Buf <= 0xFC ) ;
+		return (static_cast<unsigned char>(*Buf) >= 0x81 && static_cast<unsigned char>(*Buf) <= 0x9F) || (static_cast<unsigned char>(*Buf) >= 0xE0 && static_cast<unsigned char>(*Buf) <= 0xFC);
 	}
 
 	// ファイル名も一緒になっていると分かっているパス中からファイルパスとディレクトリパスを分割する
@@ -306,11 +322,11 @@ public :
 	DXArchiveFile_VER5( DARC_FILEHEAD_VER5 *FileHead, DXArchive_VER5 *Archive ) ;
 	~DXArchiveFile_VER5() ;
 
-	int Read( void *Buffer, int ReadLength ) ;					// ファイルの内容を読み込む
-	int Seek( int SeekPoint, int SeekMode ) ;					// ファイルポインタを変更する
-	int Tell( void ) ;											// 現在のファイルポインタを得る
-	int Eof( void ) ;											// ファイルの終端に来ているか、のフラグを得る
-	int Size( void ) ;											// ファイルのサイズを取得する
+	int Read( void *Buffer, int ReadLength ) ;	// ファイルの内容を読み込む
+	int Seek( int SeekPoint, int SeekMode ) ;	// ファイルポインタを変更する
+	int Tell( void ) ;							// 現在のファイルポインタを得る
+	int Eof( void ) ;							// ファイルの終端に来ているか、のフラグを得る
+	int Size( void ) ;							// ファイルのサイズを取得する
 
 	inline DARC_FILEHEAD_VER5 *GetFileData( void ){ return FileData ; }
 } ;
