@@ -1,5 +1,8 @@
-Just testing the difference that makes when updating changing to C++20 (I'm still studiyng C++ so probably there'll be more better things to do…)
-If you intend to use this program, get it from the original creator: [WolfDec by SinFlower](https://github.com/Sinflower/WolfDec)
+> [!CAUTION]
+> This fork is just me testing the difference that makes when updating to C++20 (I'm still studiyng C++ so probably there'll be more better things to do…). **I don't guarantee anything working here**.
+If you intend to use this program, get from it's [creator](https://github.com/Sinflower).
+
+# [WolfDec by SinFlower](https://github.com/Sinflower/WolfDec)
 
 # WolfDec
 
